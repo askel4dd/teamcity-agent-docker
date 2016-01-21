@@ -17,7 +17,14 @@ if [ ! -d "$AGENT_DIR/bin" ]; then
     done
     wget $TEAMCITY_SERVER/update/buildAgent.zip && unzip -d $AGENT_DIR buildAgent.zip && rm buildAgent.zip
     chmod +x $AGENT_DIR/bin/agent.sh
-    echo "serverUrl=${TEAMCITY_SERVER}" > $AGENT_DIR/conf/buildAgent.properties
+
+    if ! grep -q serverUrl "$AGENT_DIR/conf/buildAgent.properties"; then
+      echo "serverUrl=${TEAMCITY_SERVER}" >> $AGENT_DIR/conf/buildAgent.properties
+    fi
+
+    if ! grep -q name "$AGENT_DIR/conf/buildAgent.properties"; then
+      echo "name=${AGENT_NAME}" >> $AGENT_DIR/conf/buildAgent.properties
+    fi
 fi
 
 echo "Starting buildagent..."
